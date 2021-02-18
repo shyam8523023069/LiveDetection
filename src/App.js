@@ -1,107 +1,57 @@
-// Import dependencies
-import React, { useRef, useState, useEffect } from "react";
-import * as tf from "@tensorflow/tfjs";
-import * as cocossd from "@tensorflow-models/coco-ssd";
-import Webcam from "react-webcam";
+import React, { Component } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+ import VisualDetection from './components/VisualDetection';
+import Home from './components/Home';
+import Navigation from './components/Navigation';
 import "./App.css";
-import { drawRect } from "./utilities";
  
-function App() {
-  const webcamRef = useRef(null);
-  const canvasRef = useRef(null);
-  // Main function
-  const runCoco = async () => {
-    const net = await cocossd.load();
-    console.log("Handpose model loaded.");
-    //  Loop and detect hands
-    setInterval(() => {
-      detect(net);
-    }, 10);
-  };
-  const detect = async (net) => {
-    // Check data is available
-    if (
-      typeof webcamRef.current !== "undefined" &&
-      webcamRef.current !== null &&
-      webcamRef.current.video.readyState === 4
-    ) {
-      // Get Video Properties
-      const video = webcamRef.current.video;
-      const videoWidth = webcamRef.current.video.videoWidth;
-      const videoHeight = webcamRef.current.video.videoHeight;
-      // Set video width
-      webcamRef.current.video.width = videoWidth;
-      webcamRef.current.video.height = videoHeight;
-      // Set canvas height and width
-      canvasRef.current.width = videoWidth;
-      canvasRef.current.height = videoHeight;
-      // Make Detections
-      const obj = await net.detect(video);
-        console.log(obj[0])
-       const object= obj.map(data =>(data.class)
-          // console.log(data.score) 
-          // console.log(data.class)
-        )
-        console.log(object)
-      // const url = googleTTS.getAudioUrl(obj, {
-      //   lang: 'en-US',
-      //   slow: false,
-      //   host: 'https://translate.google.com',
-      // });
-      // console.log(url); 
-          // // console.log(bbox);
-          // // console.log(name);
-          // console.log(score);
-          const msg = new SpeechSynthesisUtterance();
-          msg.volume = 1; 
-          msg.rate = 1; 
-          msg.pitch = 1.5; 
-          msg.text  = object;
-          msg.lang = "en-US";
-          console.log(msg);
-          speechSynthesis.speak(msg);
-      // Draw mesh
-      const ctx = canvasRef.current.getContext("2d");
-      drawRect(obj, ctx); 
-    }
-  };
+class App extends Component {
+  render() {
+    return (      
+      //  <BrowserRouter>
+      //   <div>
+      //     <Navigation />
+      //       <Switch>
 
-  
-  useEffect(()=>{runCoco()},[]);
-  return (
-    <div className="App">
-      <header className="App-header">
-        <Webcam
-          ref={webcamRef}
-          muted={true} 
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 9,
-            width: 640,
-            height: 480,
-          }}
-        />
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 8,
-            width: 640,
-            height: 480,
-          }}
-        />
-      </header>
+      //        <Route path="/" component={Home} exact/>
+      //        <Route path="/visualdetectiont" component={VisualDetection}/>
+      //        <VisualDetection />
+             
+            
+      //      </Switch>
+      //   </div> 
+      // </BrowserRouter>
+      <BrowserRouter>
+      <Navigation />
+            <Switch>
+            
+<div id="wrapper">
+			<div id="bg"></div>
+			<div id="overlay"></div>
+			<div id="main">
+      
+
+				
+					<div id="header">
+						<Route path="/" component={Home} exact/>
+						
+						<nav>
+							<ul>
+								<li><Route path="/visualdetectiont" component={VisualDetection}/></li>
+								
+							</ul>
+						</nav>
+					</div>
+			
+			
+      
+		</div>
     </div>
-  );
+    <VisualDetection />
+           </Switch>
+    </BrowserRouter>
+    );
+  }
 }
+ 
 export default App;
